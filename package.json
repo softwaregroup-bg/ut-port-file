@@ -1,4 +1,12 @@
 {
   "name": "ut-port-file",
-  "version": "5.0.0"
+  "version": "5.0.0",
+  "publishConfig": {
+    "registry": "http://npm.softwaregroup-bg.com"
+  },
+  "description": "UT port file module",
+  "repository": {
+    "type": "git",
+    "url": "git@git.softwaregroup-bg.com:ut5/ut-port-file.git"
+  }
 }
