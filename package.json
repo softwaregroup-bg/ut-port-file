@@ -2,7 +2,7 @@
   "name": "ut-port-file",
   "version": "5.2.0",
   "dependencies":{
-    "glob": "~3.2.3",
+    "glob": "^5.0.15",
     "through2": "~1.1.1"
   },
   "peerDependencies":{
