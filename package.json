@@ -1,11 +1,11 @@
 {
   "name": "ut-port-file",
-  "version": "5.2.0",
-  "dependencies":{
+  "version": "5.2.1",
+  "dependencies": {
     "glob": "^5.0.15",
     "through2": "~1.1.1"
   },
-  "peerDependencies":{
+  "peerDependencies": {
     "ut-bus": "~5.2.0"
   },
   "publishConfig": {
