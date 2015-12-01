@@ -1,121 +1,96 @@
-(function(define) {define(function(require) {
-    //dependencies
-    var Port = require('ut-bus/port');
-    var util = require('util');
-    var fs = require('fs');
-    var through2 = require('through2');
-    var glob = require('glob');
+var when = require('when');
+var node = require('when/node');
+var fs = require('fs');
+var minimatch = require('minimatch');
+var stat = node.lift(fs.stat);
+var through2 = require('through2');
 
-    function FilePort() {
-        Port.call(this);
+function FilePort() {
+    this.config = {
+        id: null,
+        logLevel: '',
+        type: 'file',
+        watch: '',
+        pattern: '',
+        matchConfig: {},
+        doneDir: '',
+        streamFile: false
+    };
 
-        this.config = {
-            id: null,
-            logLevel: '',
-            type: 'file',
-            watchDir: '',
-            processingDir: '',
-            doneDir: '',
-            filePattern: '*.txt',
-            readFiles: false,
-            checkPeriod: 350000
-        };
+    this.stream;
+    this.streamNotifier;
+    this.notifyData = {};
+    this.fsWatcher;
+    this.patternMather;
+}
 
-        this.stream = null;
-        this.fsWatcher = null;
-        this.watchInterval = null;
+FilePort.prototype.init = function init() {
+    if (!this.config.watch) {
+        throw new Error('Missing configuration for file dirs!');
     }
+};
 
-    util.inherits(FilePort, Port);
+FilePort.prototype.start = function start() {
+    this.stream = through2.obj(function(chk, enc, cb) {
+        this.push(chk);
+        cb();
+    });
+    this.pipe(this.stream);
 
-    FilePort.prototype.init = function init() {
-        Port.prototype.init.apply(this, arguments);
-        if (!this.config.watchDir || !this.config.processingDir || !this.config.doneDir) {
-            throw new Error('Missing configuration for file dirs!');
-        }
-    };
+    // start watching
+    this.watch();
+    this.bindNotifier();
+};
 
-    FilePort.prototype._startWatcher = function _startWatcher() {
-        this.fsWatcher = fs.watch(this.config.watchDir, function(event, filename) {
-            this.fsWatcher.close();
-            this._processFiles();
-        }.bind(this));
-    };
+FilePort.prototype.stop = function start() {
+    clearInterval(this.streamNotifier);
+    this.fsWatcher.close();
+};
 
-    FilePort.prototype._processFile = function _processFiles(fileName) {
-        var watchFile = this.config.watchDir + '\\' + fileName;
-        if (fs.existsSync(watchFile)) {
+FilePort.prototype.watch = function watch() {
+    // start watching
+    this.fsWatcher = fs.watch(this.config.watch, {recursive: true}, function(event, filename) {
+        var saw = `${this.config.watch}${filename}`;
+        // collect info based on filename
+        this.notifyData[saw] = {event: event, filename: filename, watch: this.config.watch, time: Date.now()};
+    }.bind(this));
+};
 
-            var filePath = this.config.processingDir + '\\' + fileName;
-            fs.renameSync(watchFile, filePath);
-            if (!this.config.readFiles) {
-                this.stream.write({$$: {mtid: 'request'}, fileName: fileName})
-            } else {
-                var doneDir = this.config.doneDir;
-                var readStream = fs.createReadStream(filePath);
-                readStream.on('end', function() {
-                    fs.renameSync(filePath, doneDir + '\\' + fileName);
-                });
-                readStream.on('error', function(err) {
-                    //todo: on err?
-                    throw new Error('fs.createReadStream ERROR! ' + err);
-                });
-                this.pipe(readStream);
-            }
-        }
-    };
+FilePort.prototype.bindNotifier = function watch() {
+    // once per <second/s> write to stream if there is anything to write
+    this.streamNotifier = setInterval(function() {
+        var found = Object.keys(this.notifyData);
+        if (found.length > 0) { // we found something!
+            var d = this.notifyData;
+            this.notifyData = {};// clear data, because we don't want to send old data when stream notifiers fires next time
 
-    FilePort.prototype._processFiles = function _processFiles() {
-
-        var options = {
-            cwd: this.config.watchDir,
-            sync: true,
-            nodir: true,
-            nosort: true
-        };
-        var filesAr = glob(this.config.filePattern, options);
-        if (filesAr.length > 0) {
-            for (var i = 0; i < filesAr.length; i++) {
-                this._processFile(filesAr[i]);
-            }
-            this._processFiles();
-        } else {
-            this._startWatcher();
-        }
-    };
-
-    FilePort.prototype.start = function start(callback) {
-        Port.prototype.start.apply(this, arguments);
-
-        if (!this.config.readFiles) {
-            var procDir = this.config.processingDir;
-            var doneDir = this.config.doneDir;
-            this.stream = through2.obj(function(chunk, enc, callback) {
-
-                if (chunk.$$ && chunk.$$.mtid == 'request') {
-                    this.push(chunk);
+            found
+            .filter(function(el) { // match fiel/dir that we want
+                if (minimatch(el, this.config.pattern, this.config.matchConfig)) {
+                    return true;
                 } else {
-                    fs.renameSync(procDir + '\\' + chunk.fileName, doneDir + '\\' + chunk.fileName);
+                    delete d[el];// delete file/dir because there is some error thrown by stat
+                    return false;
                 }
-                callback();
+            }.bind(this))
+            .map(function(el, index) {
+                found[index] = stat(el)// make file/dir stat
+                    .then(function(v) { // write down stat value
+                        d[el].stat = v;
+                    })
+                    .catch(function(e) {
+                        delete d[el];// delete file/dir because there is some error thrown by stat
+                    });
             });
-            this.pipe(this.stream);
+            when
+                .settle(found)
+                .then(function(v) {
+                    if (Object.keys(d).length > 0) { // notify stream if there is any elements
+                        this.stream.write(JSON.stringify(d));
+                    }
+                }.bind(this));
         }
+    }.bind(this), 5000);
+};
 
-        this._startWatcher();
-
-        this.watchInterval = setInterval(function() {
-            this.fsWatcher.close();
-            this._processFiles();
-        }.bind(this), this.config.checkPeriod ? this.config.checkPeriod : 350000);
-
-    };
-
-    FilePort.prototype.stop = function start(callback) {
-        this.fsWatcher.close();
-        clearInterval(this.watchInterval);
-        Port.prototype.stop.apply(this, arguments);
-    };
-    return FilePort;
-
-});}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+module.exports = FilePort;

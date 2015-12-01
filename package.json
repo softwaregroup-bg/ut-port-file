@@ -2,8 +2,9 @@
   "name": "ut-port-file",
   "version": "5.2.4",
   "dependencies": {
-    "glob": "^5.0.15",
-    "through2": "~1.1.1"
+    "through2": "~1.1.1",
+    "when": "~3.7.2",
+    "minimatch": "~3.0.0"
   },
   "peerDependencies": {
     "ut-bus": "~5.2.0"
