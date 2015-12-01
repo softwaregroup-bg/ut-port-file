@@ -13,8 +13,7 @@ function FilePort() {
         watch: '',
         pattern: '',
         matchConfig: {},
-        doneDir: '',
-        streamFile: false
+        doneDir: ''
     };
 
     this.stream;
