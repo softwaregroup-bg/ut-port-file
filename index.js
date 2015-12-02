@@ -6,12 +6,12 @@ var through2 = require('through2');
 var chokidar = require('chokidar');
 var defaults = {
     type: 'file',
-    watch: [], // paths
-    pattern: '*',
-    watcherOptions: {}, // https://github.com/paulmillr/chokidar#api
-    matcherOptions: {}, // https://github.com/isaacs/minimatch#properties
-    notifyTimeout: 5000,
-    doneDir: null
+    watch: {v: []}, // paths
+    pattern: {v: '*'},
+    watcherOptions: {v: {}}, // https://github.com/paulmillr/chokidar#api
+    matcherOptions: {v: {}}, // https://github.com/isaacs/minimatch#properties
+    notifyTimeout: {v: 5000},
+    doneDir: {v: null}
 };
 
 function FilePort() {
@@ -30,7 +30,7 @@ FilePort.prototype.init = function init() {
     this.config = Object
         .keys(defaults || {})
         .reduce(function(pv, cv) {
-            pv[cv] = this.config[cv] || defaults[cv];
+            pv[cv] = this.config[cv] || defaults[cv].v;
             return pv;
         }.bind(this), {});
 };
