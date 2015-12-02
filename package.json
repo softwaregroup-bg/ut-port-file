@@ -6,6 +6,9 @@
     "when": "~3.7.2",
     "minimatch": "~3.0.0"
   },
+  "devDependencies": {
+    "ut-tools": "~0.5.1"
+  },
   "peerDependencies": {
     "ut-bus": "~5.3.0"
   },
