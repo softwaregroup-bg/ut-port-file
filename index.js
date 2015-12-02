@@ -4,8 +4,13 @@ var minimatch = require('minimatch');
 var stat = node.lift(require('fs').stat);
 var through2 = require('through2');
 var chokidar = require('chokidar');
+var Port = require('ut-bus/port');
+var util = require('util');
+
 var defaults = {
-    type: 'file',
+    id: {v: 'file'},
+    type: {v: 'file'},
+    logLevel: {v: 'trace'},
     watch: {v: []}, // paths
     pattern: {v: '*'},
     watcherOptions: {v: {}}, // https://github.com/paulmillr/chokidar#api
@@ -15,18 +20,22 @@ var defaults = {
 };
 
 function FilePort() {
-    this.config;
+    Port.call(this);
+    this.config = Object.keys(defaults).reduce(function(pv, cv) {
+        pv[cv] = defaults[cv].v;
+        return pv;
+    }, {});
     this.stream;
     this.streamNotifier;
     this.notifyData = {};
     this.fsWatcher;
     this.patternMather;
 }
+util.inherits(FilePort, Port);
 
 FilePort.prototype.init = function init() {
-    if (!this.config.watch) {
-        throw new Error('Missing configuration for file dirs!');
-    }
+    Port.prototype.init.apply(this, arguments);
+
     this.config = Object
         .keys(defaults || {})
         .reduce(function(pv, cv) {
@@ -36,6 +45,7 @@ FilePort.prototype.init = function init() {
 };
 
 FilePort.prototype.start = function start() {
+    Port.prototype.start.apply(this, arguments);
     this.stream = through2.obj(function(chk, enc, cb) {
         this.push(chk);
         cb();
