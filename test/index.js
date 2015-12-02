@@ -7,21 +7,22 @@ exec('rm -rf ./watchdir/', function(err, out) {
     console.log(out); err && console.log(err);
 });
 ff.pipe = function(stream) {
-    stream.pipe(through2(function(c, e, d) {
-        console.log(c.toString());
+    stream.pipe(through2.obj(function(c, e, d) {
+        console.log(c);
         d();
     }));
 };
 ff.config = {
     watch: './watchdir/',
     pattern: '*.foo',
-    matchConfig: {
+    matcherOptions: {
         matchBase: true
     },
     doneDir: '',
     streamFile: false
 };
 fs.mkdirSync('./watchdir/');
+ff.init();
 ff.start();
 var ws = fs.createWriteStream('./watchdir/test');
 // set env
@@ -35,12 +36,9 @@ function write() {
     wroteLines = wroteLines - 1;
     if (wroteLines > 0) {
         console.log('test wrote line');
-        setTimeout(write, 1);
+        setTimeout(write, 100);
     } else {
         ws.end();
-        // exec('rm -rf ./watchdir/', function(err, out) {
-        //   console.log(out); err && console.log(err);
-        // });
     }
 }
 

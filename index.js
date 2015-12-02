@@ -1,21 +1,21 @@
 var when = require('when');
 var node = require('when/node');
-var fs = require('fs');
 var minimatch = require('minimatch');
-var stat = node.lift(fs.stat);
+var stat = node.lift(require('fs').stat);
 var through2 = require('through2');
+var chokidar = require('chokidar');
+var defaults = {
+    type: 'file',
+    watch: [], // paths
+    pattern: '*',
+    watcherOptions: {}, // https://github.com/paulmillr/chokidar#api
+    matcherOptions: {}, // https://github.com/isaacs/minimatch#properties
+    notifyTimeout: 5000,
+    doneDir: null
+};
 
 function FilePort() {
-    this.config = {
-        id: null,
-        logLevel: '',
-        type: 'file',
-        watch: '',
-        pattern: '',
-        matchConfig: {},
-        doneDir: ''
-    };
-
+    this.config;
     this.stream;
     this.streamNotifier;
     this.notifyData = {};
@@ -27,6 +27,12 @@ FilePort.prototype.init = function init() {
     if (!this.config.watch) {
         throw new Error('Missing configuration for file dirs!');
     }
+    this.config = Object
+        .keys(defaults || {})
+        .reduce(function(pv, cv) {
+            pv[cv] = this.config[cv] || defaults[cv];
+            return pv;
+        }.bind(this), {});
 };
 
 FilePort.prototype.start = function start() {
@@ -34,7 +40,7 @@ FilePort.prototype.start = function start() {
         this.push(chk);
         cb();
     });
-    this.pipe(this.stream);
+    this.pipe(this.stream, {trace: 0, callbacks: {}});
 
     // start watching
     this.watch();
@@ -48,10 +54,10 @@ FilePort.prototype.stop = function start() {
 
 FilePort.prototype.watch = function watch() {
     // start watching
-    this.fsWatcher = fs.watch(this.config.watch, {recursive: true}, function(event, filename) {
-        var saw = `${this.config.watch}${filename}`;
+    this.fsWatcher = chokidar.watch(this.config.watch, this.config.watcherOptions);
+    this.fsWatcher.on('all', function(event, filename) {
         // collect info based on filename
-        this.notifyData[saw] = {event: event, filename: filename, watch: this.config.watch, time: Date.now()};
+        this.notifyData[filename] = {event: event, filename: filename, watch: this.config.watch, time: Date.now()};
     }.bind(this));
 };
 
@@ -65,7 +71,7 @@ FilePort.prototype.bindNotifier = function watch() {
 
             found
             .filter(function(el) { // match fiel/dir that we want
-                if (minimatch(el, this.config.pattern, this.config.matchConfig)) {
+                if (minimatch(el, this.config.pattern, this.config.matcherOptions)) {
                     return true;
                 } else {
                     delete d[el];// delete file/dir because there is some error thrown by stat
@@ -85,11 +91,11 @@ FilePort.prototype.bindNotifier = function watch() {
                 .settle(found)
                 .then(function(v) {
                     if (Object.keys(d).length > 0) { // notify stream if there is any elements
-                        this.stream.write(JSON.stringify(d));
+                        this.stream.write([d, {opcode: 'fs-changes', mtid: 'notification'}]);
                     }
                 }.bind(this));
         }
-    }.bind(this), 5000);
+    }.bind(this), this.config.notifyTimeout);
 };
 
 module.exports = FilePort;
