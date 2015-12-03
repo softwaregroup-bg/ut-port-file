@@ -7,6 +7,7 @@ var chokidar = require('chokidar');
 var Port = require('ut-bus/port');
 var util = require('util');
 
+// @TODO: future validation
 var defaults = {
     id: {v: 'file'},
     type: {v: 'file'},
@@ -26,6 +27,7 @@ function FilePort() {
         return pv;
     }, {});
     this.stream;
+    this.streams;
     this.streamNotifier;
     this.notifyData = {};
     this.fsWatcher;
@@ -36,12 +38,10 @@ util.inherits(FilePort, Port);
 FilePort.prototype.init = function init() {
     Port.prototype.init.apply(this, arguments);
 
-    this.config = Object
-        .keys(defaults || {})
-        .reduce(function(pv, cv) {
-            pv[cv] = this.config[cv] || defaults[cv].v;
-            return pv;
-        }.bind(this), {});
+    this.config = Object.keys(defaults).reduce(function(pv, cv) {
+        pv[cv] = this.config[cv] || defaults[cv].v;
+        return pv;
+    }.bind(this), this.config);
 };
 
 FilePort.prototype.start = function start() {
@@ -50,7 +50,7 @@ FilePort.prototype.start = function start() {
         this.push(chk);
         cb();
     });
-    this.pipe(this.stream, {trace: 0, callbacks: {}});
+    this.streams = this.pipe(this.stream, {trace: 0, callbacks: {}});
 
     // start watching
     this.watch();
@@ -100,9 +100,14 @@ FilePort.prototype.bindNotifier = function watch() {
             when
                 .settle(found)
                 .then(function(v) {
-                    if (Object.keys(d).length > 0) { // notify stream if there is any elements
-                        this.stream.write([d, {opcode: 'fs-changes', mtid: 'notification'}]);
-                    }
+                    var list = Object.keys(d);
+                    list.map(function(el) { // notify stream if there is any elements
+                        this.receive(this.streams[2], [{
+                            filename: d[el].filename,
+                            time: d[el].time,
+                            stat: d[el].stat
+                        }, {opcode: d[el].event, mtid: 'notification'}]);
+                    }.bind(this));
                 }.bind(this));
         }
     }.bind(this), this.config.notifyTimeout);

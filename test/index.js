@@ -3,9 +3,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var through2 = require('through2');
 var ff = new F();
-exec('rm -rf ./watchdir/', function(err, out) {
-    console.log(out); err && console.log(err);
-});
+
 ff.pipe = function(stream) {
     stream.pipe(through2.obj(function(c, e, d) {
         console.log(c);
@@ -18,9 +16,12 @@ ff.config = {
     matcherOptions: {
         matchBase: true
     },
-    doneDir: '',
-    streamFile: false
+    doneDir: ''
 };
+
+exec('rm -rf ./watchdir/', function(err, out) {
+    console.log(out); err && console.log(err);
+});
 fs.mkdirSync('./watchdir/');
 ff.init();
 ff.start();
