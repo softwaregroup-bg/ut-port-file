@@ -8,7 +8,7 @@
     "when": "~3.7.2"
   },
   "devDependencies": {
-    "ut-tools": "~0.5.1"
+    "ut-tools": "~1.0.0"
   },
   "peerDependencies": {
     "ut-bus": "~5.3.0"
@@ -18,7 +18,10 @@
   },
   "scripts": {
     "lint": "ut-lint .",
-    "test": "npm run lint"
+    "pre-commit": "npm run lint",
+    "pre-release": "ut-pre-release",
+    "release": "ut-release",
+    "post-release": "ut-post-release"
   },
   "description": "UT port file module.",
   "repository": {
