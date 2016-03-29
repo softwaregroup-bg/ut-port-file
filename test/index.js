@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 var F = require('../');
 var fs = require('fs');
 var exec = require('child_process').exec;
