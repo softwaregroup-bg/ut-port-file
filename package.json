@@ -1,6 +1,6 @@
 {
   "name": "ut-port-file",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "dependencies": {
     "chokidar": "1.6.0",
     "minimatch": "3.0.2",
