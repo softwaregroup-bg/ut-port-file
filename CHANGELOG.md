@@ -1,3 +1,13 @@
+<a name="5.4.2"></a>
+## [5.4.2](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.4.1...v5.4.2) (2016-08-12)
+
+
+### Bug Fixes
+
+* publish to npm ([df99ae4](https://github.com/softwaregroup-bg/ut-port-file/commit/df99ae4))
+
+
+
 <a name="5.4.1"></a>
 ## [5.4.1](https://git.softwaregroup-bg.com/ut5/ut-port-file/compare/v5.3.10...v5.4.1) (2016-07-11)
 
