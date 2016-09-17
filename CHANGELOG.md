@@ -1,3 +1,8 @@
+<a name="5.4.3"></a>
+## [5.4.3](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.4.2...v5.4.3) (2016-09-17)
+
+
+
 <a name="5.4.2"></a>
 ## [5.4.2](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.4.1...v5.4.2) (2016-08-12)
 
