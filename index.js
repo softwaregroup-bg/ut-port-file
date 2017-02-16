@@ -1,31 +1,32 @@
-var when = require('when');
-var node = require('when/node');
-var minimatch = require('minimatch');
-var stat = node.lift(require('fs').stat);
-var through2 = require('through2');
-var chokidar = require('chokidar');
-var Port = require('ut-bus/port');
-var util = require('util');
-
-// @TODO: future validation
-var defaults = {
-    id: {v: 'file'},
-    type: {v: 'file'},
-    logLevel: {v: 'trace'},
-    watch: {v: []}, // paths
-    pattern: {v: '*'},
-    watcherOptions: {v: {}}, // https://github.com/paulmillr/chokidar#api
-    matcherOptions: {v: {}}, // https://github.com/isaacs/minimatch#properties
-    notifyTimeout: {v: 5000},
-    doneDir: {v: null}
-};
+'use strict';
+const when = require('when');
+const node = require('when/node');
+const minimatch = require('minimatch');
+const stat = node.lift(require('fs').stat);
+const through2 = require('through2');
+const chokidar = require('chokidar');
+const Port = require('ut-bus/port');
+const util = require('util');
+const errors = require('./errors');
+const fs = require('fs-plus');
+const path = require('path');
 
 function FilePort() {
     Port.call(this);
-    this.config = Object.keys(defaults).reduce(function(pv, cv) {
-        pv[cv] = defaults[cv].v;
-        return pv;
-    }, {});
+    this.config = {
+        id: null,
+        type: 'file',
+        logLevel: '',
+        writeBaseDir: null,
+        writeTriesCount: 3,
+        writeRetryTimeout: 500,
+        watch: [], // paths
+        pattern: '*',
+        watcherOptions: {}, // https://github.com/paulmillr/chokidar#api
+        matcherOptions: {}, // https://github.com/isaacs/minimatch#properties
+        notifyTimeout: 5000,
+        doneDir: null
+    };
     this.stream;
     this.streams;
     this.streamNotifier;
@@ -37,24 +38,68 @@ util.inherits(FilePort, Port);
 
 FilePort.prototype.init = function init() {
     Port.prototype.init.apply(this, arguments);
-
-    this.config = Object.keys(defaults).reduce(function(pv, cv) {
-        pv[cv] = this.config[cv] || defaults[cv].v;
-        return pv;
-    }.bind(this), this.config);
+    this.config.writeBaseDir = path.join(this.bus.config.workDir, 'ut-port-file', this.config.id);
 };
 
 FilePort.prototype.start = function start() {
     Port.prototype.start.apply(this, arguments);
-    this.stream = through2.obj(function(chk, enc, cb) {
-        this.push(chk);
-        cb();
-    });
-    this.streams = this.pipe(this.stream, {trace: 0, callbacks: {}});
 
-    // start watching
-    this.watch();
-    this.bindNotifier();
+    return new Promise((resolve, reject) => fs.access(this.config.writeBaseDir, fs.R_OK | fs.W_OK, err => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                fs.makeTree(this.config.writeBaseDir, err => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve('Dir for journal log files has been created: ' + this.config.writeBaseDir);
+                    }
+                });
+            } else {
+                reject(err);
+            }
+        } else {
+            resolve('Dir for journal log files has been verified: ' + this.config.writeBaseDir);
+        }
+    })).then(result => {
+        this.stream = through2.obj(function(chk, enc, cb) {
+            this.push(chk);
+            cb();
+        });
+        this.streams = this.pipe(this.stream, {trace: 0, callbacks: {}});
+        this.pipeExec(this.exec.bind(this));
+        this.watch();
+        this.bindNotifier();
+        return result;
+    });
+};
+
+FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', append = true}) {
+    if (!filename || !data) {
+        return Promise.reject(errors.arguments());
+    }
+    if (path.isAbsolute(filename)) {
+        return Promise.reject(errors.absolutePath());
+    }
+    filename = path.join(this.config.writeBaseDir, filename);
+    if (path.resolve(filename.substr(0, this.config.writeBaseDir.length)) !== path.resolve(this.config.writeBaseDir)) {
+        return Promise.reject(errors.invalidFileName());
+    }
+    return new Promise((resolve, reject) => {
+        var triesLeft = this.config.writeTriesCount;
+        (function tryWrite() {
+            fs[append ? 'appendFile' : 'writeFile'](filename, data, encoding, err => {
+                if (err) {
+                    if (--triesLeft <= 0) {
+                        reject(errors.file(err));
+                    } else {
+                        setTimeout(tryWrite, this.config.writeRetryTimeout);
+                    }
+                } else {
+                    resolve({});
+                }
+            });
+        })();
+    });
 };
 
 FilePort.prototype.stop = function start() {
@@ -63,12 +108,10 @@ FilePort.prototype.stop = function start() {
 };
 
 FilePort.prototype.watch = function watch() {
-    // start watching
     this.fsWatcher = chokidar.watch(this.config.watch, this.config.watcherOptions);
-    this.fsWatcher.on('all', function(event, filename) {
-        // collect info based on filename
+    this.fsWatcher.on('all', (event, filename) => {
         this.notifyData[filename] = {event: event, filename: filename, watch: this.config.watch, time: Date.now()};
-    }.bind(this));
+    });
 };
 
 FilePort.prototype.bindNotifier = function watch() {
@@ -92,12 +135,13 @@ FilePort.prototype.bindNotifier = function watch() {
                 found[index] = stat(el)// make file/dir stat
                     .then(function(v) { // write down stat value
                         d[el].stat = v;
+                        return;
                     })
                     .catch(function(e) {
                         delete d[el];// delete file/dir because there is some error thrown by stat
                     });
             });
-            when
+            return when
                 .settle(found)
                 .then(function(v) {
                     var list = Object.keys(d);
