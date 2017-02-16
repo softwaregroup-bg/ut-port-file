@@ -1,3 +1,13 @@
+<a name="5.6.0"></a>
+# [5.6.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.5.0...v5.6.0) (2017-02-16)
+
+
+### Features
+
+* ability to write/append file ([41493f8](https://github.com/softwaregroup-bg/ut-port-file/commit/41493f8))
+
+
+
 <a name="5.5.0"></a>
 # [5.5.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.4.5...v5.5.0) (2016-12-23)
 
