@@ -1,3 +1,13 @@
+<a name="5.6.1"></a>
+## [5.6.1](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.0...v5.6.1) (2017-03-08)
+
+
+### Bug Fixes
+
+* dependencies ([923fd0d](https://github.com/softwaregroup-bg/ut-port-file/commit/923fd0d))
+
+
+
 <a name="5.6.0"></a>
 # [5.6.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.5.0...v5.6.0) (2017-02-16)
 
