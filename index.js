@@ -80,8 +80,8 @@ FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', appe
     if (path.isAbsolute(filename)) {
         return Promise.reject(errors.absolutePath());
     }
-    filename = path.join(this.config.writeBaseDir, filename);
-    if (path.resolve(filename.substr(0, this.config.writeBaseDir.length)) !== path.resolve(this.config.writeBaseDir)) {
+    filename = path.resolve(this.config.writeBaseDir, filename);
+    if (!filename.startsWith(this.config.writeBaseDir + path.sep)) {
         return Promise.reject(errors.invalidFileName());
     }
     return new Promise((resolve, reject) => {
