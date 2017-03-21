@@ -3,14 +3,14 @@
   "version": "5.6.1",
   "dependencies": {
     "chokidar": "1.6.1",
+    "fs-plus": "2.9.3",
     "minimatch": "3.0.3",
     "through2": "2.0.3",
     "ut-error": "^5.4.0",
-    "when": "3.7.7",
-    "fs-plus": "2.9.3"
+    "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.13.5"
+    "ut-tools": "^5.14.4"
   },
   "peerDependencies": {
     "ut-bus": "^5.9.0"
