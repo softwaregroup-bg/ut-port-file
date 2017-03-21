@@ -27,12 +27,12 @@ function FilePort() {
         notifyTimeout: 5000,
         doneDir: null
     };
-    this.stream;
-    this.streams;
-    this.streamNotifier;
+    this.stream = null;
+    this.streams = null;
+    this.streamNotifier = null;
     this.notifyData = {};
-    this.fsWatcher;
-    this.patternMather;
+    this.fsWatcher = null;
+    this.patternMather = null;
 }
 util.inherits(FilePort, Port);
 
@@ -135,7 +135,7 @@ FilePort.prototype.bindNotifier = function watch() {
                 found[index] = stat(el)// make file/dir stat
                     .then(function(v) { // write down stat value
                         d[el].stat = v;
-                        return;
+                        return 0;
                     })
                     .catch(function(e) {
                         delete d[el];// delete file/dir because there is some error thrown by stat
