@@ -1,3 +1,14 @@
+<a name="5.6.2"></a>
+## [5.6.2](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.1...v5.6.2) (2017-03-23)
+
+
+### Bug Fixes
+
+* dependencies ([5865c6b](https://github.com/softwaregroup-bg/ut-port-file/commit/5865c6b))
+* prevent dir traversal ([085d7d3](https://github.com/softwaregroup-bg/ut-port-file/commit/085d7d3))
+
+
+
 <a name="5.6.1"></a>
 ## [5.6.1](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.0...v5.6.1) (2017-03-08)
 
