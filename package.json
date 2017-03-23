@@ -10,7 +10,7 @@
     "when": "3.7.7"
   },
   "devDependencies": {
-    "ut-tools": "^5.14.4"
+    "ut-tools": "^5.15.0"
   },
   "peerDependencies": {
     "ut-bus": "^5.9.0"
