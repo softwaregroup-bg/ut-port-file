@@ -38,6 +38,8 @@ util.inherits(FilePort, Port);
 
 FilePort.prototype.init = function init() {
     Port.prototype.init.apply(this, arguments);
+    this.bytesSent = this.counter && this.counter('counter', 'bs', 'Bytes sent', 300);
+    this.bytesReceived = this.counter && this.counter('counter', 'br', 'Bytes received', 300);
     this.config.writeBaseDir = path.join(this.bus.config.workDir, 'ut-port-file', this.config.id);
 };
 
@@ -86,7 +88,7 @@ FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', appe
     }
     return new Promise((resolve, reject) => {
         var triesLeft = this.config.writeTriesCount;
-        (function tryWrite() {
+        var tryWrite = () => {
             fs[append ? 'appendFile' : 'writeFile'](filename, data, encoding, err => {
                 if (err) {
                     if (--triesLeft <= 0) {
@@ -95,10 +97,12 @@ FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', appe
                         setTimeout(tryWrite, this.config.writeRetryTimeout);
                     }
                 } else {
+                    !this.codec && this.bytesSent && this.bytesSent(Buffer.byteLength(data, encoding));
                     resolve({});
                 }
             });
-        })();
+        };
+        tryWrite();
     });
 };
 
