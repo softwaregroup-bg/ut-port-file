@@ -1,3 +1,13 @@
+<a name="5.7.0"></a>
+# [5.7.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.9...v5.7.0) (2017-09-28)
+
+
+### Features
+
+* add metrics ([#3](https://github.com/softwaregroup-bg/ut-port-file/issues/3)) ([5d4189b](https://github.com/softwaregroup-bg/ut-port-file/commit/5d4189b))
+
+
+
 <a name="5.6.9"></a>
 ## [5.6.9](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.8...v5.6.9) (2017-05-22)
 

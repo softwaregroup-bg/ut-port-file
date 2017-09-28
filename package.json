@@ -1,6 +1,6 @@
 {
   "name": "ut-port-file",
-  "version": "5.7.0-rc.0",
+  "version": "5.7.0",
   "dependencies": {
     "chokidar": "1.6.1",
     "fs-plus": "2.9.3",
