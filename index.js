@@ -108,7 +108,8 @@ FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', appe
 
 FilePort.prototype.stop = function start() {
     clearInterval(this.streamNotifier);
-    this.fsWatcher.close();
+    this.fsWatcher && this.fsWatcher.close();
+    this.fsWatcher = null;
 };
 
 FilePort.prototype.watch = function watch() {
