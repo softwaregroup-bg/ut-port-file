@@ -42,21 +42,11 @@ module.exports = function({parent}) {
         parent && parent.prototype.start.apply(this, arguments);
 
         this.watch();
-        return new Promise((resolve, reject) => fs.access(this.config.writeBaseDir, fs.R_OK | fs.W_OK, err => {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    fs.makeTree(this.config.writeBaseDir, err => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve('Dir for journal log files has been created: ' + this.config.writeBaseDir);
-                        }
-                    });
-                } else {
-                    reject(err);
-                }
+        return new Promise((resolve, reject) => fs.makeTree(this.config.writeBaseDir, error => {
+            if (error && error.code !== 'EEXIST') {
+                reject(error);
             } else {
-                resolve('Dir for journal log files has been verified: ' + this.config.writeBaseDir);
+                resolve('Dir for journal log files has been created: ' + this.config.writeBaseDir);
             }
         })).then(result => {
             this.pull(this.exec, {conId: 'write'});
