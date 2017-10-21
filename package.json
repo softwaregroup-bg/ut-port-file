@@ -2,18 +2,13 @@
   "name": "ut-port-file",
   "version": "5.7.0-rc.2",
   "dependencies": {
-    "chokidar": "1.6.1",
-    "fs-plus": "2.9.3",
-    "minimatch": "3.0.3",
-    "through2": "2.0.3",
-    "ut-error": "^5.4.0",
-    "when": "3.7.7"
+    "chokidar": "1.7.0",
+    "fs-plus": "3.0.1",
+    "ut-error": "^5.4.9"
   },
   "devDependencies": {
-    "ut-tools": "^5.15.0"
-  },
-  "peerDependencies": {
-    "ut-bus": "^5.9.0"
+    "through2": "2.0.3",
+    "ut-tools": "^5.23.2"
   },
   "scripts": {
     "lint": "ut-lint .",
