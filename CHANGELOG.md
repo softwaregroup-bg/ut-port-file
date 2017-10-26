@@ -1,3 +1,18 @@
+<a name="5.8.0"></a>
+# [5.8.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.7.0...v5.8.0) (2017-10-26)
+
+
+### Bug Fixes
+
+* check for null ([f0e6a7f](https://github.com/softwaregroup-bg/ut-port-file/commit/f0e6a7f))
+
+
+### Features
+
+* add metrics ([91be0f3](https://github.com/softwaregroup-bg/ut-port-file/commit/91be0f3))
+
+
+
 <a name="5.7.0"></a>
 # [5.7.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.6.9...v5.7.0) (2017-09-28)
 
