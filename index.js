@@ -2,9 +2,9 @@
 const merge = require('lodash.merge');
 const chokidar = require('chokidar');
 const util = require('util');
-const errors = require('./errors');
 const fs = require('fs-plus');
 const path = require('path');
+let errors;
 
 module.exports = function({parent}) {
     function FilePort({config}) {
@@ -22,6 +22,7 @@ module.exports = function({parent}) {
             doneDir: null,
             events: ['add']
         }, config);
+        errors = errors || require('./errors')(this.defineError);
         this.streamNotifier = null;
         this.notifyData = new Map();
         this.fsWatcher = null;
