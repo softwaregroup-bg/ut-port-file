@@ -1,3 +1,14 @@
+<a name="6.0.0"></a>
+# [6.0.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.8.0...v6.0.0) (2017-12-06)
+
+
+### Bug Fixes
+
+* add dependency ([bc53b47](https://github.com/softwaregroup-bg/ut-port-file/commit/bc53b47))
+* remove ut-bus dependency, use es6 ([ac6b41e](https://github.com/softwaregroup-bg/ut-port-file/commit/ac6b41e))
+
+
+
 <a name="5.8.0"></a>
 # [5.8.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.7.0...v5.8.0) (2017-10-26)
 
