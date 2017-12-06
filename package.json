@@ -3,7 +3,8 @@
   "version": "6.0.0-ut6.2",
   "dependencies": {
     "chokidar": "1.7.0",
-    "fs-plus": "3.0.1"
+    "fs-plus": "3.0.1",
+    "lodash.merge": "4.6.0"
   },
   "devDependencies": {
     "through2": "2.0.3",
