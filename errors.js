@@ -1,14 +1,13 @@
 'use strict';
-const create = require('ut-error').define;
+module.exports = create => {
+    const FilePort = create('filePort', undefined, 'File error');
+    const Arguments = create('arguments', FilePort, 'Invalid arguments error');
 
-const FilePort = create('FilePort', undefined, 'File error');
-const Arguments = create('Arguments', FilePort, 'Invalid arguments error');
-const AbsolutePath = create('AbsolutePath', Arguments, 'Absolute path error');
-const InvalidFileName = create('InvalidFileName', Arguments, 'Writing outside of base dir is forbidden');
-
-module.exports = {
-    file: cause => new FilePort(cause),
-    arguments: cause => new Arguments(cause),
-    absolutePath: cause => new AbsolutePath(cause),
-    invalidFileName: cause => new InvalidFileName(cause)
+    return {
+        file: FilePort,
+        watch: create('watch', FilePort, 'Watch error'),
+        arguments: Arguments,
+        absolutePath: create('absolutePath', Arguments, 'Absolute path error'),
+        invalidFileName: create('invalidFileName', Arguments, 'Writing outside of base dir is forbidden')
+    };
 };
