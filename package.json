@@ -1,6 +1,6 @@
 {
   "name": "ut-port-file",
-  "version": "6.1.0-rc-bahur.0",
+  "version": "6.1.0-rc-bahur.1",
   "dependencies": {
     "chokidar": "1.7.0",
     "fs-plus": "3.0.2",
