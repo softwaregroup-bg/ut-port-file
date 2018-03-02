@@ -1,3 +1,8 @@
+<a name="6.1.0"></a>
+# [6.1.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v6.1.0-rc-bahur.1...v6.1.0) (2018-03-02)
+
+
+
 <a name="6.0.0"></a>
 # [6.0.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v5.8.0...v6.0.0) (2017-12-06)
 
