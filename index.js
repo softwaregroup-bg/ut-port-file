@@ -4,9 +4,10 @@ const chokidar = require('chokidar');
 const util = require('util');
 const fs = require('fs-plus');
 const path = require('path');
-let errors;
 
 module.exports = function({parent}) {
+    let filePortErrors;
+
     function FilePort({config}) {
         parent && parent.apply(this, arguments);
         this.config = merge({
@@ -22,7 +23,8 @@ module.exports = function({parent}) {
             doneDir: null,
             events: ['add']
         }, config);
-        errors = errors || require('./errors')(this.defineError);
+        if (!this.errors || !this.errors.getError) throw new Error('Please use the latest version of ut-port');
+        filePortErrors = require('./errors')(this.errors);
         this.streamNotifier = null;
         this.notifyData = new Map();
         this.fsWatcher = null;
@@ -57,14 +59,14 @@ module.exports = function({parent}) {
 
     FilePort.prototype.exec = function exec({filename, data, encoding = 'utf8', append = true}) {
         if (!filename || !data) {
-            return Promise.reject(errors.arguments());
+            return Promise.reject(filePortErrors['filePort.arguments']());
         }
         if (path.isAbsolute(filename)) {
-            return Promise.reject(errors.absolutePath());
+            return Promise.reject(filePortErrors['filePort.arguments.absolutePath']());
         }
         filename = path.resolve(this.config.writeBaseDir, filename);
         if (!filename.startsWith(this.config.writeBaseDir + path.sep)) {
-            return Promise.reject(errors.invalidFileName());
+            return Promise.reject(filePortErrors['filePort.arguments.invalidFileName']());
         }
         return new Promise((resolve, reject) => {
             let triesLeft = this.config.writeTriesCount;
@@ -72,7 +74,7 @@ module.exports = function({parent}) {
                 fs[append ? 'appendFile' : 'writeFile'](filename, data, encoding, err => {
                     if (err) {
                         if (--triesLeft <= 0) {
-                            reject(errors.file(err));
+                            reject(filePortErrors['filePort'](err));
                         } else {
                             setTimeout(tryWrite, this.config.writeRetryTimeout);
                         }
@@ -99,7 +101,7 @@ module.exports = function({parent}) {
         }
         let queue = this.pull(null, {conId: 'watch'});
         this.fsWatcher = chokidar.watch(this.config.watch, this.config.watcherOptions);
-        this.fsWatcher.on('error', error => this.error(errors.watch(error)));
+        this.fsWatcher.on('error', error => this.error(filePortErrors['filePort.watch'](error)));
         this.config.events.forEach(eventName => this.fsWatcher.on(eventName, (path, stat) => {
             let event = [{
                 path,
