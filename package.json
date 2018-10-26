@@ -1,6 +1,6 @@
 {
   "name": "ut-port-file",
-  "version": "6.2.0-rc-godfather.0",
+  "version": "6.2.0-rc-godfather.1",
   "dependencies": {
     "chokidar": "1.7.0",
     "fs-plus": "3.0.2",
