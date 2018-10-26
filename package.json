@@ -4,10 +4,10 @@
   "dependencies": {
     "chokidar": "1.7.0",
     "fs-plus": "3.0.2",
-    "lodash.merge": "4.6.0"
+    "lodash.merge": "4.6.1"
   },
   "devDependencies": {
-    "ut-tools": "^5.32.5"
+    "ut-tools": "^6.3.7"
   },
   "scripts": {
     "lint": "ut-lint .",
@@ -19,6 +19,7 @@
     "postpublish": "ut-postpublish",
     "postversion": "ut-postversion",
     "precommit": "ut-precommit",
+    "precover": "ut-precover",
     "prepublish": "ut-prepublish",
     "prepush": "ut-prepush",
     "pretest": "ut-pretest",
