@@ -3,8 +3,7 @@
   "version": "6.2.0-rc-godfather.2",
   "dependencies": {
     "chokidar": "2.0.4",
-    "fs-plus": "3.0.2",
-    "lodash.merge": "4.6.1"
+    "fs-plus": "3.0.2"
   },
   "devDependencies": {
     "ut-tools": "^6.3.7"
