@@ -19,7 +19,6 @@ module.exports = function({utPort}) {
             return {
                 id: null,
                 type: 'file',
-                logLevel: 'info',
                 writeBaseDir: null,
                 writeTriesCount: 3,
                 writeRetryTimeout: 500,
