@@ -1,3 +1,23 @@
+# [7.0.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v6.1.0...v7.0.0) (2019-02-02)
+
+
+### Bug Fixes
+
+* ignore package-lock.json ([d8aa8b2](https://github.com/softwaregroup-bg/ut-port-file/commit/d8aa8b2))
+* refactor as class ([#7](https://github.com/softwaregroup-bg/ut-port-file/issues/7)) ([f14e498](https://github.com/softwaregroup-bg/ut-port-file/commit/f14e498))
+* refactor errors ([6abd848](https://github.com/softwaregroup-bg/ut-port-file/commit/6abd848))
+* remove logLevel ([b5ab910](https://github.com/softwaregroup-bg/ut-port-file/commit/b5ab910))
+* remove unused dependencies ([aff3425](https://github.com/softwaregroup-bg/ut-port-file/commit/aff3425))
+* upgrade chokidar ([0be918b](https://github.com/softwaregroup-bg/ut-port-file/commit/0be918b))
+* upgrade dependencies ([d7d6e89](https://github.com/softwaregroup-bg/ut-port-file/commit/d7d6e89))
+
+
+### BREAKING CHANGES
+
+* requires upgrade of ut-port and ut-run
+
+
+
 <a name="6.1.0"></a>
 # [6.1.0](https://github.com/softwaregroup-bg/ut-port-file/compare/v6.1.0-rc-bahur.1...v6.1.0) (2018-03-02)
 
