@@ -161,46 +161,46 @@
 
 
 <a name="5.4.1"></a>
-## [5.4.1](https://git.softwaregroup-bg.com/ut5/ut-port-file/compare/v5.3.10...v5.4.1) (2016-07-11)
+## [5.4.1](https://git.softwaregroup.com/ut5/ut-port-file/compare/v5.3.10...v5.4.1) (2016-07-11)
 
 
 ### Features
 
-* upgrade dependencies ([e23bc26](https://git.softwaregroup-bg.com/ut5/ut-port-file/commit/e23bc26))
+* upgrade dependencies ([e23bc26](https://git.softwaregroup.com/ut5/ut-port-file/commit/e23bc26))
 
 
 
 <a name="5.3.10"></a>
-## [5.3.10](https://git.softwaregroup-bg.com/ut5/ut-port-file/compare/v5.3.9...v5.3.10) (2016-04-15)
+## [5.3.10](https://git.softwaregroup.com/ut5/ut-port-file/compare/v5.3.9...v5.3.10) (2016-04-15)
 
 
 ### Features
 
-* add Gitlab-ci and Jenkins scripts ([a799916](https://git.softwaregroup-bg.com/ut5/ut-port-file/commit/a799916))
+* add Gitlab-ci and Jenkins scripts ([a799916](https://git.softwaregroup.com/ut5/ut-port-file/commit/a799916))
 
 
 
 <a name="5.3.9"></a>
-## [5.3.9](https://git.softwaregroup-bg.com/ut5/ut-port-file/compare/v5.3.8...v5.3.9) (2016-03-31)
+## [5.3.9](https://git.softwaregroup.com/ut5/ut-port-file/compare/v5.3.8...v5.3.9) (2016-03-31)
 
 
 ### Bug Fixes
 
-* use constant dependencies ([709ee48](https://git.softwaregroup-bg.com/ut5/ut-port-file/commit/709ee48))
+* use constant dependencies ([709ee48](https://git.softwaregroup.com/ut5/ut-port-file/commit/709ee48))
 
 
 
 <a name="5.3.8"></a>
-## [5.3.8](https://git.softwaregroup-bg.com/ut5/ut-port-file/compare/v5.3.6...v5.3.8) (2016-03-30)
+## [5.3.8](https://git.softwaregroup.com/ut5/ut-port-file/compare/v5.3.6...v5.3.8) (2016-03-30)
 
 
 ### Bug Fixes
 
-* switch to nexus ([f7c3f33](https://git.softwaregroup-bg.com/ut5/ut-port-file/commit/f7c3f33))
+* switch to nexus ([f7c3f33](https://git.softwaregroup.com/ut5/ut-port-file/commit/f7c3f33))
 
 ### Features
 
-* ut-tools upgrade ([9eebf99](https://git.softwaregroup-bg.com/ut5/ut-port-file/commit/9eebf99))
+* ut-tools upgrade ([9eebf99](https://git.softwaregroup.com/ut5/ut-port-file/commit/9eebf99))
 
 
 
