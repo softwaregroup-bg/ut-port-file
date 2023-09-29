@@ -2,8 +2,8 @@
   "name": "ut-port-file",
   "version": "7.0.3",
   "dependencies": {
-    "chokidar": "3.0.2",
-    "fs-plus": "3.0.2"
+    "chokidar": "3.5.3",
+    "fs-plus": "3.1.1"
   },
   "devDependencies": {
     "tap": "^16.3.4"

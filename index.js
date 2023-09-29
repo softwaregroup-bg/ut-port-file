@@ -15,6 +15,7 @@ module.exports = function({utPort}) {
             this.notifyData = new Map();
             this.fsWatcher = null;
         }
+
         get defaults() {
             return {
                 id: null,
@@ -29,6 +30,7 @@ module.exports = function({utPort}) {
                 events: ['add']
             };
         }
+
         async init() {
             const result = await super.init(...arguments);
             this.bytesSent = this.counter && this.counter('counter', 'bs', 'Bytes sent', 300);
@@ -36,6 +38,7 @@ module.exports = function({utPort}) {
             this.config.writeBaseDir = path.join(this.bus.config.workDir, 'ut-port-file', this.config.id);
             return result;
         }
+
         async start() {
             await super.start(...arguments);
             this.watch();
@@ -49,6 +52,7 @@ module.exports = function({utPort}) {
             this.pull(this.exec, {conId: 'write'});
             return result;
         }
+
         async exec({ filename, data, encoding = 'utf8', append = true }) {
             if (!filename || !data) {
                 throw filePortErrors['filePort.arguments']();
@@ -62,11 +66,11 @@ module.exports = function({utPort}) {
             }
             return new Promise((resolve, reject) => {
                 let triesLeft = this.config.writeTriesCount;
-                let tryWrite = () => {
+                const tryWrite = () => {
                     fs[append ? 'appendFile' : 'writeFile'](filename, data, encoding, err => {
                         if (err) {
                             if (--triesLeft <= 0) {
-                                reject(filePortErrors['filePort'](err));
+                                reject(filePortErrors.filePort(err));
                             } else {
                                 setTimeout(tryWrite, this.config.writeRetryTimeout);
                             }
@@ -79,6 +83,7 @@ module.exports = function({utPort}) {
                 tryWrite();
             });
         }
+
         stop() {
             this.streamNotifier && clearInterval(this.streamNotifier);
             this.streamNotifier = null;
@@ -86,15 +91,16 @@ module.exports = function({utPort}) {
             this.fsWatcher = null;
             return super.stop();
         }
+
         watch() {
             if (!this.config.watch) {
                 return;
             }
-            let queue = this.pull(null, {conId: 'watch'});
+            const queue = this.pull(null, {conId: 'watch'});
             this.fsWatcher = chokidar.watch(this.config.watch, this.config.watcherOptions);
             this.fsWatcher.on('error', error => this.error(filePortErrors['filePort.watch'](error)));
             this.config.events.forEach(eventName => this.fsWatcher.on(eventName, (path, stat) => {
-                let event = [{
+                const event = [{
                     path,
                     time: Date.now(),
                     stat
@@ -111,7 +117,7 @@ module.exports = function({utPort}) {
 
             if (this.config.notifyTimeout) {
                 this.streamNotifier = setInterval(() => {
-                    let events = Array.from(this.notifyData.values());
+                    const events = Array.from(this.notifyData.values());
                     this.notifyData.clear();
                     events.forEach(event => queue.push(event));
                 }, this.config.notifyTimeout);
