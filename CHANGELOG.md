@@ -1,3 +1,7 @@
+## [7.0.4](https://github.com/softwaregroup-bg/ut-port-file/compare/v7.0.3...v7.0.4) (2023-09-29)
+
+
+
 ## [7.0.3](https://github.com/softwaregroup-bg/ut-port-file/compare/v7.0.2...v7.0.3) (2020-01-17)
 
 
